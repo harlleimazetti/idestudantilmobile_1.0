@@ -1,0 +1,585 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+<title>Estudante DF</title>
+<link rel="stylesheet" href="css/jqm-custom-1.4.5.min.css" />
+<link rel="stylesheet" href="css/jquery.mobile.icons-1.4.5.min.css" />
+<link rel="stylesheet" href="css/jquery.mobile.structure-1.4.5.min.css" />
+<link rel="stylesheet" href="css/fontawesome/css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/estilo.css" />
+
+<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/db.js"></script>
+<script src="js/funcoes.js"></script>
+<script src="js/config.js"></script>
+<script src="js/javascripts.js"></script>
+</head>
+<body>
+
+	
+    <!-- ////// LOGIN ////// -->
+	<div data-role="page" id="login" data-theme="c">
+    	<div data-role="content">
+		<div style="margin-left:auto; margin-right:auto; width:16em; text-align:center; padding-top:30px">
+    		<img src="img/logo.png" width="200">
+            <br><br>
+			<p style="margin:20px 0 0 0" class="profile_texto">Para verificar a validade e autenticidade do documento do estudante informe no campo baixo o número da carteira e clique no botão 'Pesquisar'</p>
+			<form style="margin-top:20px">
+    			<input type="text" data-theme="a" value="" placeholder="Número da carteira" name="matricula" id="matricula">
+		        <a href="#" data-theme="a" data-role="button" class="ui-btn-active" id="btn-pesquisar-matricula">Pesquisar</a>
+    		</form>
+		</div>
+        </div>
+	</div>
+    
+    <!-- ////// RESULTADO DA PESQUISA ////// -->
+	<div data-role="page" id="resultado" data-theme="a">
+		<div data-role="header" data-position="fixed" data-theme="c">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Resultado Pesquisa</h1>
+		</div><!-- /header -->
+		<div data-role="content">
+        	<div class="profile_logo">
+            	<img id="img_carteira" src="" />
+            </div>
+        	<table align="center" width="100%" cellpadding="0" cellspacing="0">
+            	<tr>
+                	<td align="center">
+						<h2 class="titulo-bloco carteira_nome" style="margin:0">Nome do aluno</h2>
+						<h3 class="profile_titulo carteira_colegio" style="margin:0">Nome do colégio</h3>
+						<p class="profile_titulo carteira_matricula" style="margin:0">matricula</p>
+                        <button id="btn-resultado" data-theme="" data-inline="true"><i class="fa fa-check" id="icon_resultado"></i> <span class="carteira_mensagem">resultado</span></button>
+                    </td>
+                </tr>
+            </table>
+		</div><!-- /content -->
+	</div><!-- /page -->
+    
+    <div data-role="page" id="pontos_descarte" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Pontos de Descarte</h1>
+		</div><!-- /header -->
+    	<div data-role="content" id="content">
+
+			<div id="map-canvas"></div>
+
+			<div class="bloco">
+				<ul data-role="listview" data-inset="false" class="pontos_descarte_lista">
+					<li data-role="list-divider" data-theme="f" style="padding:15px">Locais de descarte próximos</li>
+					<li><a href="#ponto_descarte_detalhes">Container Público SCS Qd 01<p>SCS Quadra 01 Bloco M - Em frente ao edifício Gilberto Salomão</p><p class="distancia"><i class="fa fa-map-marker"></i> 0,4 km</p></a></li>
+					<li><a href="#ponto_descarte_detalhes">Coop. Reciclagem ABC<p>SCLRN 706 Norte Bloco C Loja 04</p><p class="distancia"><i class="fa fa-map-marker"></i> 0,8 km</p></a></li>
+					<li><a href="#ponto_descarte_detalhes">Container Público 203 Sul<p>SCLS 203 Bloco D Entrada Estacionamento</p><p class="distancia"><i class="fa fa-map-marker"></i> 1,2 km</p></a></li>
+					<li><a href="#ponto_descarte_detalhes">Container Público SCS Qd 05<p>SCS Quadra 05 Bloco H - Em frente à loja</p><p class="distancia"><i class="fa fa-map-marker"></i> 0,3 km</p></a></li>
+					<li><a href="#ponto_descarte_detalhes">Centro de Coleta de Recicláveis<p>SCLS 502 Bloco D Loja 09 - subsolo</p><p class="distancia"><i class="fa fa-map-marker"></i> 0,6 km</p></a></li>
+                    <li><a href="#ponto_descarte_detalhes">Container Público SCN Qd 06<p>SCN Quadra 06 Bloco H - no final da rua</p><p class="distancia"><i class="fa fa-map-marker"></i> 0,4 km</p></a></li>
+				</ul>
+	        </div>
+		</div>
+    </div>
+    
+    <!-- ////// PONTO DESCARTE DETALHES ////// -->
+    <div data-role="page" id="ponto_descarte_detalhes" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Detalhes</h1>
+		</div><!-- /header -->
+    	<div data-role="content">
+        	<div class="profile_logo">
+            	<i class="fa fa-trash-o fa-3x"></i>
+            </div>
+            <h2 class="profile_titulo">Coop. de Reciclagem ABC</h2>
+            <p class="profile_address">
+            	SCLRN 706 Bloco C Loja 04 - Asa Norte<br>Brasília - DF, 72305-900
+            </p>
+            <p class="profile_address">
+            	<strong>(61) 3333-4400</strong>
+            </p>
+            <div data-role="tabs">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#informacoes" data-ajax="false" class="ui-btn-active">Informações</a></li>
+                        <li><a href="#como_chegar" data-ajax="false">Ítens aceitos</a></li>
+                    </ul>
+                </div>
+                <div id="informacoes">
+					<p class="profile_p">
+						Lorem ipsum dolor sit amet, stet iriure eu his. Per no sint dolore, nobis scriptorem mel id. Probo docendi his ad, pericula theophrastus nam te. Falli iuvaret has ut, usu ei illud nemore. Pro persequeris appellantur ullamcorper ex, duo eu feugait philosophia, epicuri consequat usu id. Option intellegam ut has.
+					</p>
+                </div>
+                <div id="como_chegar">
+                
+                </div>
+			</div>
+            <button data-theme="f">Telefonar</button>
+            <a href="#mensagem" data-role="button" data-theme="e">Enviar Mensagem</a>
+		</div><!-- /content -->
+	</div><!-- /page -->
+    
+    <div data-role="page" id="horario_coleta" data-theme="j">
+		<div data-role="header" data-position="fixed" data-theme="l">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Horário</h1>
+		</div><!-- /header -->
+    	<div data-role="content">
+			<ul data-role="listview" data-inset="false">
+				<li data-role="list-divider">
+					<div class="ui-grid-a">
+						<div class="ui-block-a">Dia e hora</div>
+						<div class="ui-block-b" style="text-align:right;">Notificar</div>
+					</div><!-- /grid-a -->
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                    	<span class="icone_proximas_coletas">
+                        	<i class="fa fa-clock-o"></i>
+                        </span>
+                        Hoje, 19/08 - 13:00
+                        <span class="ui-li-aside flip_proximas_coletas">
+                			<select name="flip2" id="flip2" data-role="slider" data-mini="true">
+		        	        	<option value="off">Não</option>
+	        			        <option value="on">Sim</option>
+				            </select>
+                        </span>
+                        <p>Coleta de lixo - SLU</p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                    	<span class="icone_proximas_coletas">
+                        	<i class="fa fa-clock-o"></i>
+                        </span>
+                        Amanhã, 20/08 - 15:00
+                        <span class="ui-li-aside flip_proximas_coletas">
+                			<select name="flip2" id="flip2" data-role="slider" data-mini="true">
+		        	        	<option value="off">Não</option>
+	        			        <option value="on">Sim</option>
+				            </select>
+                        </span>
+                        <p>Coleta de lixo - SLU</p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                    	<span class="icone_proximas_coletas">
+                        	<i class="fa fa-clock-o"></i>
+                        </span>
+                        Sexta, 21/08 - 13:00
+                        <span class="ui-li-aside flip_proximas_coletas">
+                			<select name="flip2" id="flip2" data-role="slider" data-mini="true">
+		        	        	<option value="off">Não</option>
+	        			        <option value="on">Sim</option>
+				            </select>
+                        </span>
+                        <p>Coleta de lixo - SLU</p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                    	<span class="icone_proximas_coletas">
+                        	<i class="fa fa-clock-o"></i>
+                        </span>
+                        Sábado, 22/08 - 16:00
+                        <span class="ui-li-aside flip_proximas_coletas">
+                			<select name="flip2" id="flip2" data-role="slider" data-mini="true">
+		        	        	<option value="off">Não</option>
+	        			        <option value="on">Sim</option>
+				            </select>
+                        </span>
+                        <p>Coleta de lixo - SLU</p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                    	<span class="icone_proximas_coletas">
+                        	<i class="fa fa-clock-o"></i>
+                        </span>
+                        Segunda, 24/08 - 17:00
+                        <span class="ui-li-aside flip_proximas_coletas">
+                			<select name="flip2" id="flip2" data-role="slider" data-mini="true">
+		        	        	<option value="off">Não</option>
+	        			        <option value="on">Sim</option>
+				            </select>
+                        </span>
+                        <p>Coleta de lixo - SLU</p>
+                    </a>
+                </li>
+			</ul>
+		</div>
+	</div>
+    
+    <div data-role="page" id="rastrear_coleta" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Rastrear</h1>
+		</div><!-- /header -->
+    	<div data-role="content" id="content-rastrear">
+			<div id="map-canvas-rastrear"></div>
+        	<div class="bloco">
+            	<h1 class="profile_texto">Caminhão de coleta de lixo - SLU</h1>
+                <p class="profile_texto">Última atualização: 24/08 - 15:32</p>
+                <p class="profile_texto">Setor Médico Hospitalar Sul</p>
+                <p class="profile_texto">Brasília - DF, 72305-900</p>
+                <p class="profile_texto" id="latlong"><i class="fa-location-arrow"></i></p>
+            </div>
+		</div>
+	</div>
+
+    <div data-role="page" id="servicos" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Serviços</h1>
+		</div><!-- /header -->
+    	<div data-role="content">
+			<fieldset data-role="controlgroup" data-iconpos="right">
+				<legend class="profile_texto">Marque os serviços que deseja encontrar e depois clique no botão 'Buscar'</legend>
+                <br>
+				<input type="checkbox" name="checkbox-h-6a" id="checkbox-h-6a">
+				<label for="checkbox-h-6a">Coleta de lixo orgânico</label>
+				<input type="checkbox" name="checkbox-h-6b" id="checkbox-h-6b">
+				<label for="checkbox-h-6b">Coleta de lixo seco</label>
+				<input type="checkbox" name="checkbox-h-6c" id="checkbox-h-6c">
+				<label for="checkbox-h-6c">Retirada de entulho</label>
+				<input type="checkbox" name="checkbox-h-7c" id="checkbox-h-7c">
+				<label for="checkbox-h-7c">Retirada de móveis usados</label>
+				<input type="checkbox" name="checkbox-h-8c" id="checkbox-h-8c">
+				<label for="checkbox-h-8c">Coleta de lixo hospitalar</label>
+				<input type="checkbox" name="checkbox-h-8c" id="checkbox-h-8c">
+				<label for="checkbox-h-8c">Componentes eletrônicos</label>
+				<input type="checkbox" name="checkbox-h-8c" id="checkbox-h-8c">
+				<label for="checkbox-h-8c">Coleta de baterias</label>
+				<input type="checkbox" name="checkbox-h-8c" id="checkbox-h-8c">
+				<label for="checkbox-h-8c">Outros materiais</label>
+			</fieldset>
+			<a href="#servicos_lista" data-role="button" data-theme="f">Buscar</a>
+		</div>
+	</div>
+    
+    <div data-role="page" id="servicos_lista" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Serviços</h1>
+		</div><!-- /header -->
+    	<div data-role="content">
+			<ul data-role="listview" data-inset="false" class="list_servicos">
+				<li data-role="list-divider">Resultado da busca</li>
+				<li data-icon="false">
+                	<a href="#servicos_detalhes">
+                    	<img src="img/servicos_logo_6.png">
+                        <h2>Coop. de Reciclagem ABC</h2>
+                        <p>
+                        	<span>178 avaliações</span>
+                            <span style="float:right;">
+	                        	<i class="fa fa-star star_green"></i>
+    	                        <i class="fa fa-star star_green"></i>
+        	                    <i class="fa fa-star star_green"></i>
+            	                <i class="fa fa-star star_green"></i>
+                	            <i class="fa fa-star star_green"></i>
+							</span>
+                        </p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                    	<img src="img/servicos_logo_1.jpg">
+                        <h2>Neo Recycle Ltda.</h2>
+                        <p>
+                        	<span>35 avaliações</span>
+                            <span style="float:right;">
+	                        	<i class="fa fa-star star_green"></i>
+    	                        <i class="fa fa-star star_green"></i>
+        	                    <i class="fa fa-star star_green"></i>
+            	                <i class="fa fa-star star_gray"></i>
+                	            <i class="fa fa-star star_gray"></i>
+							</span>
+                        </p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                    	<img src="img/servicos_logo_7.jpg">
+                        <h2>Recicla Total Resíduos</h2>
+                        <p>
+                        	<span>84 avaliações</span>
+                            <span style="float:right;">
+	                        	<i class="fa fa-star star_green"></i>
+    	                        <i class="fa fa-star star_green"></i>
+        	                    <i class="fa fa-star star_green"></i>
+            	                <i class="fa fa-star star_green"></i>
+                	            <i class="fa fa-star star_green"></i>
+							</span>
+                        </p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                    	<img src="img/servicos_logo_5.jpg">
+                        <h2>Só Resíduos Ltda.</h2>
+                        <p>
+                        	<span>93 avaliações</span>
+                            <span style="float:right;">
+	                        	<i class="fa fa-star star_green"></i>
+    	                        <i class="fa fa-star star_green"></i>
+        	                    <i class="fa fa-star star_gray"></i>
+            	                <i class="fa fa-star star_gray"></i>
+                	            <i class="fa fa-star star_gray"></i>
+							</span>
+                        </p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                    	<img src="img/servicos_logo_3.jpg">
+                        <h2>Empresa de Coleta Urbana</h2>
+                        <p>
+                        	<span>105 avaliações</span>
+                            <span style="float:right;">
+	                        	<i class="fa fa-star star_green"></i>
+    	                        <i class="fa fa-star star_green"></i>
+        	                    <i class="fa fa-star star_green"></i>
+            	                <i class="fa fa-star star_green"></i>
+                	            <i class="fa fa-star star_gray"></i>
+							</span>
+                        </p>
+                    </a>
+                </li>
+                <li></li>
+			</ul>
+		</div>
+	</div>
+    
+    <!-- ////// SERVIÇO DETALHES ////// -->
+    <div data-role="page" id="servicos_detalhes" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Detalhes</h1>
+		</div><!-- /header -->
+    	<div data-role="content">
+        	<div class="profile_img">
+            	<img src="img/profile_img.jpg" />
+            </div>
+            <ul data-role="listview" style="top:-40px; position:relative;">
+            	<li data-role="list-divider" data-theme="f">
+                	<h1 class="profile_nome">Coop. de Reciclagem ABC</h1>
+                    <p class="profile_texto">(61) 3333-4400</p>
+                    <p class="profile_texto">
+                    	<span>
+                        	Distância: 0,4 Km
+                        </span>
+                    	<span style="float:right;">
+                    	<i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        </span>
+                    </p>
+                </li>
+            </ul>
+        	<div class="profile_logo">
+            	<img src="img/servicos_logo_6.png">
+            </div>
+            <h2 class="profile_titulo">Coop. de Reciclagem ABC</h2>
+            <p class="profile_address">
+            	SCLRN 706 Bloco C Loja 04 - Asa Norte<br>Brasília - DF, 72305-900
+            </p>
+            <p class="profile_p">
+            	Lorem ipsum dolor sit amet, stet iriure eu his. Per no sint dolore, nobis scriptorem mel id. Probo docendi his ad, pericula theophrastus nam te. Falli iuvaret has ut, usu ei illud nemore. Pro persequeris appellantur ullamcorper ex, duo eu feugait philosophia, epicuri consequat usu id. Option intellegam ut has.
+            </p>
+            <button data-theme="f">Telefonar</button>
+            <a href="#mensagem" data-role="button" data-theme="e">Enviar Mensagem</a>
+		</div><!-- /content -->
+	</div><!-- /page -->
+    
+    <!-- ////// REPORTAR ////// -->
+    <div data-role="page" id="reportar" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Reportar</h1>
+		</div><!-- /header -->
+    	<div data-role="content">
+			<label for="coordenadas">Coordenadas do GPS:</label>
+			<input type="text" name="coordenadas" id="coordenadas" value="">
+        	<label for="txt_reportar">Descrição</label>
+        	<textarea id="txt_reportar"></textarea>
+            <button data-theme="f" class="capturar_imagem" data-img-uri="imagem_uri" data-img-vis="visualizacao_imagem">Capturar Imagem</button>
+            <a href="#reportar_sucesso" data-role="button" data-theme="e">Enviar</a>
+			<img style="display:block;width:100%;" id="visualizacao_imagem" src="" />
+			<img style="display:none;" id="largeImage" src="" />
+		</div><!-- /content -->
+	</div><!-- /page -->
+    
+    <!-- ////// REPORTAR SUCESSO ////// -->
+    <div data-role="page" id="reportar_sucesso" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Reportar</h1>
+		</div><!-- /header -->
+    	<div data-role="content"><br>
+        	<div class="profile_address">
+            	<i class="fa fa-check-circle-o fa-5x" style="font-size:120px; color:#4CAF50;"></i>
+            </div>
+            <br>
+            <div class="profile_titulo">
+            	Mensagem enviada com sucesso!
+            </div>
+            <div class="profile_p" style="text-align:center !important;">
+            	Obrigado por colaborar para<br>manter nosso ambiente limpo.
+            </div>
+            <br><br>
+            <a href="#inicio" data-role="button" data-theme="f">Voltar</a>
+		</div><!-- /content -->
+	</div><!-- /page -->
+    
+    <!-- ////// MENSAGEM ////// -->
+    <div data-role="page" id="mensagem" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Mensagem</h1>
+		</div><!-- /header -->
+    	<div data-role="content">
+			<label for="assunto">Assunto:</label>
+			<input type="text" name="assunto" id="assunto" value="">
+        	<label for="mensagem">Mensagem:</label>
+        	<textarea id="mensagem"></textarea>
+            <a href="#reportar_sucesso" data-role="button" data-theme="f">Enviar</a>
+		</div><!-- /content -->
+	</div><!-- /page -->
+    
+    <!-- ////// MENSAGENS ////// -->
+    <div data-role="page" id="mensagens" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Mensagens</h1>
+		</div><!-- /header -->
+    	<div data-role="content">
+        
+			<ul data-role="listview" data-inset="false" class="list_servicos">
+				<li data-role="list-divider">Mensagens</li>
+				<li data-icon="false">
+                	<a href="#mensagem_visualizar">
+                    	<img src="img/a1.jpg">
+                        <h2>Fulano de Tal</h2>
+                        <p>
+                        	<span>Aguardo seu contato para formalizar proposta</span>
+                            <span style="float:right;"></span>
+                        </p>
+                        <p>
+                        	<span style="color:#888">Quinta, 21/08 - 10:55</span>
+                        </p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#mensagem_visualizar">
+                    	<img src="img/a2.jpg">
+                        <h2>Beltrano da Silva</h2>
+                        <p>
+                        	<span>O vôo sai hoje às 15h. Não se atrase</span>
+                            <span style="float:right;"></span>
+                        </p>
+                        <p>
+                        	<span style="color:#888">Sexta, 23/08 - 19:17</span>
+                        </p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#mensagem_visualizar">
+                    	<img src="img/a3.jpg">
+                        <h2>Ciclano Sousa</h2>
+                        <p>
+                        	<span>O plano de contas foi revisado</span>
+                            <span style="float:right;"></span>
+                        </p>
+                        <p>
+                        	<span style="color:#888">Sábado, 22/08 - 10:43</span>
+                        </p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#mensagem_visualizar">
+                    	<img src="img/a4.jpg">
+                        <h2>Fulano da Silva</h2>
+                        <p>
+                        	<span>Reunião confirmada para hoje</span>
+                            <span style="float:right;"></span>
+                        </p>
+                        <p>
+                        	<span style="color:#888">Sábado, 22/08 - 12:10</span>
+                        </p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#mensagem_visualizar">
+                    	<img src="img/a5.jpg">
+                        <h2>Peixoto de Azevedo</h2>
+                        <p>
+                        	<span>Estarei em Brasília amanhã, preciso te encontrar</span>
+                            <span style="float:right;"></span>
+                        </p>
+                        <p>
+                        	<span style="color:#888">Segunda, 24/08 - 17:35</span>
+                        </p>
+                    </a>
+                </li>
+                <li></li>
+			</ul>
+            
+			<ul data-role="listview" data-inset="false">
+				<li data-role="list-divider">Notificações</li>
+				<li data-icon="false">
+                	<a href="#">
+                        <h2>Notificação de coleta</h2>
+                        <p>Coleta da SLU hoje às 15h</p>
+                    </a>
+                </li>
+				<li data-icon="false">
+                	<a href="#">
+                        <h2>Notificação de coleta</h2>
+                        <p>Coleta Seletiva hoje às 16h</p>
+                    </a>
+                </li>
+			</ul>            
+
+		</div><!-- /content -->
+	</div><!-- /page -->
+    
+    <!-- ////// MENSAGEM VISUALIZAR ////// -->
+    <div data-role="page" id="mensagem_visualizar" data-theme="d">
+		<div data-role="header" data-position="fixed" data-theme="f">
+			<a href="#" data-rel="back" class="fa fa-chevron-left"></a>
+			<h1>Mensagem</h1>
+		</div><!-- /header -->
+    	<div data-role="content">
+        
+			<ul data-role="listview" data-inset="false" class="list_servicos">
+            	<li data-role="list-divider">Mensagem</li>
+				<li data-icon="false">
+                	<a href="#mensagem_visualizar">
+                    	<img src="img/a1.jpg">
+                        <h2>Fulano de Tal</h2>
+                        <p>
+                        	<span style="color:#888">Quinta, 21/08 - 10:55</span>
+                        </p>
+                    </a>
+                </li>
+                <li data-icon="false">
+                	<a href="#">
+                		<h2>&nbsp;&nbsp;&nbsp;&nbsp;Aguardo seu contato para formalizar proposta</h2>
+					</a>
+                </li>
+			</ul>
+            <br>
+			<p class="profile_p">
+				Lorem ipsum dolor sit amet, stet iriure eu his. Per no sint dolore, nobis scriptorem mel id. Probo docendi his ad, pericula theophrastus nam te. Falli iuvaret has ut, usu ei illud nemore. Pro persequeris appellantur ullamcorper ex, duo eu feugait philosophia, epicuri consequat usu id. Option intellegam ut has
+			</p>
+			<a href="#mensagem" data-role="button" data-theme="f">Responder</a>
+            <a href="#mensagens" data-role="button" data-theme="i">Excluir</a>
+		</div><!-- /content -->
+	</div><!-- /page -->
+
+</body>
+</html>
