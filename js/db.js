@@ -16,7 +16,7 @@ db.transaction (function (transaction)
 	transaction.executeSql (sql, undefined, function() { }, error);
 	//console.log(sql);
 	
-	var sql = "INSERT OR IGNORE INTO config (id, url_servidor) VALUES ('1', 'http://192.168.100.5/idestudantilmobile/sincronizar.php') ";
+	var sql = "INSERT OR IGNORE INTO config (id, url_servidor) VALUES ('1', 'http://www.estudantenet.com.br/mobile/sincronizar.php') ";
 	transaction.executeSql (sql, undefined, function() { }, error);
 	//console.log(sql);
 });
