@@ -40,6 +40,7 @@ $(document).on( "click" , "#btn-pesquisar-matricula", function () {
 	get_config(1, function(config) {
 		var matricula = $('#matricula').val();
 		var url_servidor = config.url_servidor;
+		//console.log(url_servidor);
 		$.ajax({
 			url: url_servidor,
 			data: {acao: 'pesquisar_matricula', dados : {matricula : matricula}},
@@ -77,7 +78,7 @@ $(document).on( "click" , "#btn-pesquisar-matricula", function () {
 $(document).on('pagebeforeshow', '#resultado', function()
 {
 	resultado = $.parseJSON(sessionStorage.resultado);
-	console.log(resultado);
+	//console.log(resultado);
 	$('.carteira_nome').html(resultado.carteira[0].nome);
 	$('.carteira_colegio').html(resultado.carteira[0].colegio);
 	$('.carteira_matricula').html(resultado.carteira[0].matricula);
@@ -86,12 +87,16 @@ $(document).on('pagebeforeshow', '#resultado', function()
 	$('#icon_resultado').removeClass('fa-close');
 	if (resultado.status == 'er') {
 		$('#icon_resultado').addClass('fa-close');
-		$('#btn-resultado').attr('data-theme', 'i');
-		$('#btn-resultado').button();
+		$('#btn-resultado').removeClass('ui-bar-f');
+		$('#btn-resultado').addClass('ui-bar-i');
+		//$('#btn-resultado').attr('data-theme', 'i');
+		//$('#btn-resultado').button();
 	} else {
 		$('#icon_resultado').addClass('fa-check');
-		$('#btn-resultado').attr('data-theme', 'f');
-		$('#btn-resultado').button();
+		$('#btn-resultado').removeClass('ui-bar-i');
+		$('#btn-resultado').addClass('ui-bar-f');
+		//$('#btn-resultado').attr('data-theme', 'f');
+		//$('#btn-resultado').button();
 	}
 });
 

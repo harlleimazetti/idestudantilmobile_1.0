@@ -1,10 +1,10 @@
 <?php
 	header('Access-Control-Allow-Origin: *');
-	header("content-type: text/javascript");
-	//header("Content-Type: application/json");
+	//header("content-type: text/javascript");
+	header("Content-Type: application/json; charset=utf8");
 	
-	$connection=mysql_connect("localhost","root","");
-	$db = mysql_select_db("idestudantil",$connection);
+	$connection = mysqli_connect("carteiraestuda.mysql.dbaas.com.br","carteiraestuda","imb240997","carteiraestuda");
+	//$db = mysqli_select_db("carteiraestuda",$connection);
 	
 	if (isset($_POST['acao'])) {
 		$acao = $_POST['acao'];
@@ -21,48 +21,48 @@
 	}
 	
 	if ($acao == 'sincronizar') {
-		$resultado = sincronizar($dados);
+		$resultado = sincronizar($dados, $connection);
 	}
 	
 	if ($acao == 'pesquisar_matricula') {
-		$resultado = pesquisar_matricula($dados);
+		$resultado = pesquisar_matricula($dados, $connection);
 	}
 	
 	if ($acao == 'imagem') {
-		carregar_imagem($_GET['carteira_id']);
+		carregar_imagem($_GET['carteira_id'], $connection);
 	}
 	
 	if ($callback != '') {
-		echo $_GET['callback'].'(' . json_encode($resultado).');';
+		echo $_GET["callback"]."(".json_encode($resultado).");";
 	} else {
 		echo json_encode($resultado);
 	}
 	
 	exit;
 	
-	function sincronizar($dados) {
-		mysql_query('SET CHARACTER SET utf8');
+	function sincronizar($dados, $connection) {
+		mysqli_query($connection, 'SET CHARACTER SET utf8');
 		$resultado = array();
 		$resultado['status'] = '';
 		$resultado['mensagem'] = '';
 		$resultado['dados'] = $dados;
 		$s1 = "SELECT * FROM pessoas WHERE id_pessoa = '".$dados['id_pessoa']."' ORDER BY id_pessoa";
-		$q1 = mysql_query($s1);
+		$q1 = mysqli_query($connection, $s1);
 		$pessoas = array();
 		$a = 0;
-		while ($r1 = mysql_fetch_assoc($q1)) {
+		while ($r1 = mysqli_fetch_assoc($q1)) {
 			$pessoas[$a] = $r1;
 			$s2 = "SELECT * FROM contas WHERE id_pessoa = '".$r1['id_pessoa']."' ORDER BY id_conta";
-			$q2 = mysql_query($s2);
+			$q2 = mysqli_query($connection, $s2);
 			$pessoas[$a]["contas"] = array();
 			$b = 0;
-			while ($r2 = mysql_fetch_assoc($q2)) {
+			while ($r2 = mysqli_fetch_assoc($q2)) {
 				$pessoas[$a]["contas"][$b] = $r2;
 				$s3 = "SELECT * FROM lancamentos WHERE id_conta = '".$r2['id_conta']."' ORDER BY data, id_lancamento";
-				$q3 = mysql_query($s3);
+				$q3 = mysqli_query($connection, $s3);
 				$pessoas[$a]["contas"][$b]["lancamentos"] = array();
 				$c = 0;
-				while($r3 = mysql_fetch_assoc($q3)) {
+				while($r3 = mysqli_fetch_assoc($q3)) {
 					$pessoas[$a]["contas"][$b]["lancamentos"][$c] = $r3;
 					$c++;
 				}
@@ -74,8 +74,8 @@
 		return $resultado;
 	}
 	
-	function pesquisar_matricula($dados) {
-		mysql_query('SET CHARACTER SET utf8');
+	function pesquisar_matricula($dados, $connection) {
+		mysqli_query($connection, 'SET CHARACTER SET utf8');
 		$resultado = array();
 		$resultado['status'] = '';
 		$resultado['mensagem'] = '';
@@ -88,10 +88,11 @@
 					FROM carteira AS ca
 					WHERE ca.numero = '" . $dados['matricula']. "'
 					LIMIT 1";
-			$q1 = mysql_query($s1);
-			if (mysql_num_rows($q1) > 0) {
-				$r1 = mysql_fetch_assoc($q1);
+			$q1 = mysqli_query($connection, $s1);
+			if (mysqli_num_rows($q1) > 0) {
+				$r1 = mysqli_fetch_assoc($q1);
 				$carteira[0] = $r1;
+				$carteira[0]["imagem"] = '';
 				if (empty($r1['ativa'])) {
 					$resultado['status'] = 'er';
 					$resultado['mensagem'] = 'Carteira inválida';					
@@ -111,16 +112,16 @@
 		return $resultado;
 	}
 	
-	function carregar_imagem($id) {
-		mysql_query('SET CHARACTER SET utf8');
+	function carregar_imagem($id, $connection) {
+		mysqli_query($connection, 'SET CHARACTER SET utf8');
 		if ($id != '') {
 			$s1 = "	SELECT *
 					FROM carteira AS ca
 					WHERE id = '" . $id . "'
 					LIMIT 1";
-			$q1 = mysql_query($s1);
-			if (mysql_num_rows($q1) > 0) {
-				$r1 = mysql_fetch_assoc($q1);
+			$q1 = mysqli_query($connection, $s1);
+			if (mysqli_num_rows($q1) > 0) {
+				$r1 = mysqli_fetch_assoc($q1);
 				$imagem = $r1['imagem'];
 			} else {
 				$imagem = '';
@@ -132,17 +133,17 @@
 	
 	function sql($tabela, $dados) {
 		$resultado = array();
-		mysql_query('SET CHARACTER SET utf8');
+		mysqli_query($connection, 'SET CHARACTER SET utf8');
 		if(is_array($dados)) {
 			$s = "SELECT * FROM `".$tabela."` WHERE id = '".$dados['id']."' AND re_id='".$dados['re_id']."'";
-			$q = mysql_query($s);
-			$n = mysql_num_rows($q);
+			$q = mysqli_query($connection, $s);
+			$n = mysqli_num_rows($q);
 			if ($n <= 0) {
 				$campos = implode(", ", array_keys($dados));
 				$valores = array_map('mysql_real_escape_string', array_values($dados));
 				$valores = "'" . implode("', '", $valores) . "'";
 				$sql = "INSERT INTO `".$tabela."` ($campos) VALUES ($valores)";
-    			mysql_query($sql);
+    			mysqli_query($connection, $sql);
 			} else {
 				foreach ($dados as $key => $value) {
 					$value = mysql_real_escape_string($value); // this is dedicated to @Jon
@@ -151,15 +152,15 @@
 				}
 				$implodeArray = implode(', ', $updates);
 				$sql = "UPDATE `".$tabela."` SET $implodeArray WHERE id='".$dados['id']."'";
-				mysql_query($sql);
+				mysqli_query($connection, $sql);
 			}
-			if (!mysql_error()) {
+			if (!mysqli_error()) {
 				$resultado['status'] = 'ok';
 				$resultado['mensagem'] = 'Registros gravados com sucesso';
 				$resultado['registro'] = $dados;
 			} else {
 				$resultado['status'] = 'er';
-				$resultado['mensagem'] = 'Problema na gravação dos registros: ' . mysql_error() . ', ' . $sql;
+				$resultado['mensagem'] = 'Problema na gravação dos registros: ' . mysqli_error() . ', ' . $sql;
 				$resultado['registro'] = $dados;
 			}
 		} else {
@@ -181,7 +182,7 @@
 		$conteudo = addslashes($conteudo);
 		fclose($fp);
 		$s = "UPDATE ".$dados['tb']." SET ".$dados['cp']." = '".$conteudo."' WHERE id = ".$dados['id'];
-		$q = mysql_query($s);
+		$q = mysqli_query($connection, $s);
 		
 		//$resultado['status'] = 'ok';
 		//$resultado['mensagem'] = $s;
